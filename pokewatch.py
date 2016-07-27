@@ -8,7 +8,7 @@ import requests
 CENTRAL = ('42.364399098341', '-71.102836263782')
 
 
-class Pokewatcher:
+class PokeWatcher:
     """Utility for monitoring PokeVision."""
     pokedex_path = 'pokedex.json'
     data_url = 'https://pokevision.com/map/data/{}/{}'
