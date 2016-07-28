@@ -1,0 +1,16 @@
+web:
+  build: .
+  command: 'bash -c ''gunicorn pokewatch.wsgi --log-file -'''
+  working_dir: /app/user
+  environment:
+    PORT: 8080
+    DATABASE_URL: 'postgres://postgres:@herokuPostgresql:5432/postgres'
+    DJANGO_SETTINGS_MODULE: 'pokewatch.settings'
+  ports:
+    - '8080:8080'
+  links:
+    - herokuPostgresql
+  volumes:
+    - '.:/app/user'
+herokuPostgresql:
+  image: postgres

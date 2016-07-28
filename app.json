@@ -1,0 +1,8 @@
+{
+  "name": "pokewatch",
+  "description": "Django app for keeping an eye on Pokemon spawning in Pokemon GO.",
+  "image": "heroku/python:3",
+  "addons": [
+    "heroku-postgresql"
+  ]
+}
