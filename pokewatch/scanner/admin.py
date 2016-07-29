@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from pokewatch.pokewatcher.models import Place, Trainer
+from pokewatch.scanner.models import Place, Trainer
 
 
 @admin.register(Place)

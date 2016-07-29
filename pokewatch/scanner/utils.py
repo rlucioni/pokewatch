@@ -5,8 +5,7 @@ import json
 import requests
 
 
-CENTRAL = ('42.364399098341', '-71.102836263782')
-
+# 42.36191322660385, -71.10261440277100
 
 class PokeWatcher:
     """Utility for monitoring PokeVision."""

@@ -22,7 +22,7 @@ DJANGO_APPS = (
 
 LOCAL_APPS = (
     'pokewatch.pokedex.apps.PokedexConfig',
-    'pokewatch.pokewatcher.apps.PokewatcherConfig',
+    'pokewatch.scanner.apps.ScannerConfig',
 )
 
 INSTALLED_APPS = DJANGO_APPS + LOCAL_APPS
