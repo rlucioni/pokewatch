@@ -5,8 +5,8 @@ from pokewatch.pokedex.models import Pokemon
 
 class Place(models.Model):
     label = models.CharField(unique=True, max_length=255)
-    latitude = models.DecimalField(max_digits=9, decimal_places=6)
-    longitude = models.DecimalField(max_digits=9, decimal_places=6)
+    latitude = models.DecimalField(max_digits=16, decimal_places=14)
+    longitude = models.DecimalField(max_digits=16, decimal_places=14)
 
     created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
