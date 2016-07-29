@@ -2,7 +2,6 @@ from django.db import models
 
 
 class Pokemon(models.Model):
-    """Representation of a Pokemon."""
     name = models.CharField(unique=True, max_length=255)
     pokedex_number = models.PositiveIntegerField(unique=True)
 
