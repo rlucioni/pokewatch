@@ -1,8 +1,12 @@
 import json
+import logging
 
 from django.core.management.base import BaseCommand
 
 from pokewatch.pokedex.models import Pokemon
+
+
+logger = logging.getLogger(__name__)
 
 
 class Command(BaseCommand):
@@ -11,7 +15,10 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         with open(self.pokedex_path) as f:
-            data = json.loads(f.read())
+            data = json.load(f)
 
         for pokedex_number, name in data.items():
-            Pokemon.objects.get_or_create(name=name, pokedex_number=pokedex_number)
+            _, created = Pokemon.objects.get_or_create(name=name, pokedex_number=pokedex_number)
+
+            if created:
+                logger.info('Saved %s: %s', pokedex_number, name)
