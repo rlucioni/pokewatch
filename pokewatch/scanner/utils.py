@@ -1,6 +1,5 @@
 import datetime
 import itertools
-import json
 
 import requests
 
