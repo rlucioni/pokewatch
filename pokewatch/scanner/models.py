@@ -75,6 +75,6 @@ class Trainer(models.Model):
             text=body,
         )
 
-        status, msg = self.sendgrid_client.send(message)
+        status, msg = sendgrid_client.send(message)
         log_msg = 'SendGrid returned {status}: {msg}.'.format(status=status, msg=msg)
         logger.info(log_msg) if status == 200 else logger.error(log_msg)
