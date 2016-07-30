@@ -4,18 +4,19 @@ import json
 
 import requests
 
+from pokewatch.pokedex.models import Pokemon
+
 
 class PokeWatcher:
     """Utility for monitoring PokeVision."""
-    pokedex_path = 'pokedex.json'
-    data_url = 'https://pokevision.com/map/data/{}/{}'
+    data_url = 'https://pokevision.com/map/data/{latitude}/{longitude}'
 
-    def __init__(self, coordinates):
-        self.coordinates = coordinates
+    def __init__(self, latitude, longitude):
+        self.latitude = latitude
+        self.longitude = longitude
 
         self.url = self.build_url()
         self.nearby = self.load_nearby()
-        self.pokedex = self.load_pokedex()
 
         self.pokemon = self.dedup_nearby()
 
@@ -24,7 +25,7 @@ class PokeWatcher:
         Using the provided coordinates, construct a URL that can be used to request
         data from the PokeVision server.
         """
-        return self.data_url.format(*self.coordinates)
+        return self.data_url.format(latitude=self.latitude, longitude=self.longitude)
 
     def load_nearby(self):
         """Load nearby Pokemon data from the PokeVision server."""
@@ -34,13 +35,6 @@ class PokeWatcher:
 
         # TODO: What to do when the 'status' is 'success' but the pokemon' list is empty?
         return data['pokemon']
-
-    def load_pokedex(self):
-        """Load the Pokedex JSON from disk."""
-        with open(self.pokedex_path) as f:
-            data = json.loads(f.read())
-
-        return {int(k): v for k, v in data.items()}
 
     def dedup_nearby(self):
         """
@@ -55,8 +49,15 @@ class PokeWatcher:
         pokemon = []
         for key, group in itertools.groupby(nearby, key=lambda p: p['pokemonId']):
             data = next(group)
+
+            name = Pokemon.objects.filter(pokedex_number=data['pokemonId'])
             pokemon.append(
-                Pokemon(self.pokedex[data['pokemonId']], data['expiration_time'])
+                NearbyPokemon(
+                    name,
+                    data['expiration_time'],
+                    data['latitude'],
+                    data['longitude'],
+                )
             )
 
         return pokemon
@@ -67,12 +68,15 @@ class PokeWatcher:
         self.pokemon = self.dedup_nearby()
 
 
-class Pokemon:
-    """Representation of a Pokemon."""
-    def __init__(self, name, expiration):
-        # TODO: Store coordinates, too.
+class NearbyPokemon:
+    """Representation of a nearby Pokemon."""
+    map_url = 'https://www.google.com/maps/place/{latitude},{longitude}'
+
+    def __init__(self, name, expiration, latitude, longitude):
         self.name = name
         self.expiration = expiration
+        self.latitude = latitude
+        self.longitude = longitude
 
     def expires_in(self):
         """Calculate time remaining until this Pokemon disappears from the map."""
@@ -81,3 +85,7 @@ class Pokemon:
         now = datetime.datetime.now()
 
         return expiration - now
+
+    def map_link(self):
+        """Return a link to Google Maps with a pin on the Pokemon's location."""
+        return self.map_url.format(latitude=self.latitude, longitude=self.longitude)

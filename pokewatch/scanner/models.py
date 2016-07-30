@@ -1,6 +1,13 @@
+import logging
+
+from django.conf import settings
 from django.db import models
+import sendgrid
 
 from pokewatch.pokedex.models import Pokemon
+
+
+logger = logging.getLogger(__name__)
 
 
 class Place(models.Model):
@@ -35,3 +42,33 @@ class Trainer(models.Model):
 
     def __str__(self):
         return self.name
+
+    def notify(self, place, pokemon, sendgrid_client):
+        logger.info('Notifying %s of nearby Pokemon.', self.name)
+
+        lines = []
+        for p in pokemon:
+            minutes, seconds = divmod(p.expires_in().seconds, 60)
+            line = (
+                'A wild {name} is nearby! '
+                'It\'ll be around for {minutes}:{seconds}. '
+                'Find it on the map at {link}.'
+            ).format(
+                name=p.name,
+                minutes=minutes,
+                seconds=seconds,
+                link=p.map_link,
+            )
+
+        body = '\n'.join(lines)
+
+        message = sendgrid.Mail(
+            to=self.email,
+            from_email=settings.FROM_EMAIL,
+            subject='Pokemon near {}!'.format(place.label),
+            text=body,
+        )
+
+        status, msg = self.sendgrid_client.send(message)
+        log_msg = 'SendGrid returned {status}: {msg}.'.format(status=status, msg=msg)
+        logger.info(log_msg) if status == 200 else logger.error(log_msg)
