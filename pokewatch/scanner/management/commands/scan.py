@@ -26,6 +26,9 @@ class Command(BaseCommand):
 
             watcher = PokeWatcher(place.latitude, place.longitude)
 
+            for p in watcher.pokemon:
+                logger.info('%s nearby %s', p.name, place.label)
+
             for trainer in Trainer.objects.all():
                 if place in trainer.places.all():
                     logger.info('%s is interested in Pokemon near %s, checking wishlist.', trainer.name, place.label)

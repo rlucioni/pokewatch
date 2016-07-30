@@ -50,7 +50,7 @@ class PokeWatcher:
         for key, group in itertools.groupby(nearby, key=lambda p: p['pokemonId']):
             data = next(group)
 
-            name = Pokemon.objects.filter(pokedex_number=data['pokemonId'])
+            name = Pokemon.objects.get(pokedex_number=data['pokemonId']).name
             pokemon.append(
                 NearbyPokemon(
                     name,
