@@ -67,7 +67,7 @@ class Trainer(models.Model):
 
             lines.append(line)
 
-        body = '\n'.join(lines)
+        body = '\n\n'.join(lines)
         message = sendgrid.Mail(
             to=self.email,
             from_email=settings.FROM_EMAIL,
