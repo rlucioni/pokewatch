@@ -1,7 +1,9 @@
 import json
 import logging
 
+from django.conf import settings
 from django.core.management.base import BaseCommand
+import sendgrid
 
 from pokewatch.scanner.models import Place, Trainer
 from pokewatch.scanner.utils import PokeWatcher
@@ -25,10 +27,10 @@ class Command(BaseCommand):
             watcher = PokeWatcher(place.latitude, place.longitude)
 
             for trainer in Trainer.objects.all():
-                if place in trainer.places:
+                if place in trainer.places.all():
                     logger.info('%s is interested in Pokemon near %s, checking wishlist.', trainer.name, place.label)
 
-                    wishlist = [p.name for p in trainer.pokemon]
+                    wishlist = [p.name for p in trainer.pokemon.all()]
                     pokemon = [p for p in watcher.pokemon if p.name in wishlist]
 
                     if pokemon:

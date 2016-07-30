@@ -2,7 +2,6 @@ import logging
 
 from django.conf import settings
 from django.db import models
-import sendgrid
 
 from pokewatch.pokedex.models import Pokemon
 
