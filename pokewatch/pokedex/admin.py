@@ -8,5 +8,5 @@ class PokemonAdmin(admin.ModelAdmin):
     search_fields = ('name', 'pokedex_number')
     list_display = ('name', 'pokedex_number')
 
-    fields = ('name', 'pokedex_number', 'created', 'modified')
-    readonly_fields = ('name', 'pokedex_number', 'created', 'modified')
+    fields = ('name', 'pokedex_number', 'sightings', 'created', 'modified')
+    readonly_fields = ('name', 'pokedex_number', 'sightings', 'created', 'modified')

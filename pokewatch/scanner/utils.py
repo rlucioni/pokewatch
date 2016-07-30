@@ -1,5 +1,6 @@
 import datetime
 import itertools
+import time
 
 import requests
 
@@ -46,18 +47,26 @@ class PokeWatcher:
         nearby = sorted(self.nearby, key=lambda p: (p['pokemonId'], p['expiration_time']))
 
         pokemon = []
+        timestamp = time.time()
+
         for key, group in itertools.groupby(nearby, key=lambda p: p['pokemonId']):
             data = next(group)
 
-            name = Pokemon.objects.get(pokedex_number=data['pokemonId']).name
+            monster = Pokemon.objects.get(pokedex_number=data['pokemonId'])
+            latitude = data['latitude']
+            longitude = data['longitude']
+
             pokemon.append(
                 NearbyPokemon(
-                    name,
+                    monster.name,
                     data['expiration_time'],
-                    data['latitude'],
-                    data['longitude'],
+                    latitude,
+                    longitude,
                 )
             )
+
+            monster.sightings.append([timestamp, latitude, longitude])
+            monster.save()
 
         return pokemon
 
