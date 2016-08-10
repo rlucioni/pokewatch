@@ -2,6 +2,8 @@
 
 Django app for keeping an eye on Pokemon spawning in Pokemon GO.
 
+NOTE: This project is defunct. It relied on [PokeVision](https://pokevision.com/), a website whose services are no longer available.
+
 ## Overview
 
 This app uses Docker and Heroku's [container tools plugin](https://github.com/heroku/heroku-container-tools) to facilitate local development and deployment to Heroku. Working, local installations of Docker and Docker Compose are required.
